@@ -1,0 +1,86 @@
+#!/bin/env bash
+
+set -euo pipefail
+
+source "./conf"
+
+echo "Check deps"
+command -v magick >/dev/null || { echo "ImageMagick (convert) not found"; exit 1; }
+command -v ../.././linuxdeploy >/dev/null || { echo "linuxdeploy not found"; exit 1; }
+
+echo
+echo "Make dirs: ${APPDIR}"
+rm -rf "${APPDIR}"
+mkdir -p "${APPDIR}/usr/bin"
+mkdir -p "${APPDIR}/usr/share/applications"
+mkdir -p "${APPDIR}/usr/share/icons/hicolor"
+
+echo
+echo "Downoad Cmake"
+readonly arch=$(uname -m)
+wget \
+  "https://github.com/Kitware/CMake/releases/download/v${APP_VERSION}/cmake-${APP_VERSION}-linux-${arch}.tar.gz"
+
+readonly package_name="cmake-${APP_VERSION}-linux-${arch}"
+echo
+echo "Extract ${package_name}"
+tar -xvf ${package_name}.tar.gz
+
+echo
+echo "Add binary"
+cp ${package_name}/bin/cmake "${APPDIR}/usr/bin/"
+
+echo
+echo "Add modules"
+readonly short_version=$(echo "$APP_VERSION" | cut -d '.' -f1,2)
+cp -r ${package_name}/share/cmake-${short_version} "$APPDIR/usr/share"
+
+echo
+echo "Add AppRun"
+cat > "${APPDIR}/AppRun" <<EOF
+#!/bin/bash
+HERE=\$(dirname "\$(readlink -f "\$0")")
+export PATH="\$HERE/usr/bin:$PATH"
+export CMAKE_ROOT="\$HERE/usr/share/cmake-${short_version}"
+exec "\$HERE/usr/bin/${APP}" "\$@"
+EOF
+chmod +x "${APPDIR}/AppRun"
+
+echo
+echo "Add .desktop"
+cat > "${APPDIR}/usr/share/applications/${APP}.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=${APP}
+Exec=${APP}
+Icon=${ICON_NAME}
+Terminal=true
+Categories=${CATEGORIES};
+EOF
+
+echo
+echo "Add icons"
+for size in 16 32 64 128 256; do
+  mkdir -p "${APPDIR}/usr/share/icons/hicolor/${size}x${size}/apps"
+  magick "${ICON_SOURCE}" -resize ${size}x${size} "$APPDIR/usr/share/icons/hicolor/${size}x${size}/apps/${ICON_NAME}.png"
+done
+
+echo
+echo "Build"
+../.././linuxdeploy \
+  --appdir "${APPDIR}" \
+  --executable="${APPDIR}/usr/bin/${APP}" \
+  --desktop-file="${APPDIR}/usr/share/applications/${APP}.desktop" \
+  --icon-file="${APPDIR}/usr/share/icons/hicolor/256x256/apps/${ICON_NAME}.png" \
+  --output appimage
+
+echo
+echo "Cleanup"
+rm -rf ${APPDIR}
+rm -rf ${package_name}.tar.gz
+rm -rf ${package_name}
+
+echo
+echo "Move ${APP} to ../builds"
+mkdir -p ../../builds/
+mv "${APP}"*.AppImage ../../builds/${APP}

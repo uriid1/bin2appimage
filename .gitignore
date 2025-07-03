@@ -2,3 +2,4 @@ builds/*
 linuxdeploy
 *.AppDir/
 *.AppImage
+*.tar.gz

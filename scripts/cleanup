@@ -5,7 +5,10 @@ set -euo pipefail
 echo "Find and delete *.AppDir..."
 find "apps" -type d -name '*.AppDir' -exec rm -rf {} +
 
-echo "Find and delete *.AppImage файлов..."
+echo "Find and delete *.AppImage..."
 find "apps" -type f -name '*.AppImage' -exec rm -f {} +
+
+echo "Find and delete *.tar.gz..."
+find "apps" -type f -name '*.tar.gz' -exec rm -f {} +
 
 echo "Cleanup complete"

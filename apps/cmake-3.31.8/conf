@@ -5,7 +5,7 @@ export NO_STRIP=true
 
 # Конфиг
 APP=cmake
-BINARY_PATH="$(which $APP)"
+APP_VERSION="3.31.8"
 APPDIR=./Cmake.AppDir
 ICON_SOURCE=icon.png
 ICON_NAME=$APP
