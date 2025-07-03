@@ -4,9 +4,9 @@
 export NO_STRIP=true
 
 # Конфиг
-APP=tcpdump
+APP=strace
 BINARY_PATH="$(which $APP)"
-APPDIR=./Tcpdump.AppDir
+APPDIR=./Strace.AppDir
 ICON_SOURCE=icon.png
 ICON_NAME=$APP
 CATEGORIES="Development"
