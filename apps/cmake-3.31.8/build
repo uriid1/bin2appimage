@@ -15,34 +15,36 @@ mkdir -p "${APPDIR}/usr/bin"
 mkdir -p "${APPDIR}/usr/share/applications"
 mkdir -p "${APPDIR}/usr/share/icons/hicolor"
 
+readonly ARCH=$(uname -m)
+readonly PACKAGE_NAME="cmake-${APP_VERSION}-linux-${ARCH}"
+
 echo
 echo "Downoad Cmake"
-readonly arch=$(uname -m)
-wget \
-  "https://github.com/Kitware/CMake/releases/download/v${APP_VERSION}/cmake-${APP_VERSION}-linux-${arch}.tar.gz"
+if [ ! -f "${PACKAGE_NAME}.tar.gz" ]; then
+  wget "https://github.com/Kitware/CMake/releases/download/v${APP_VERSION}/${PACKAGE_NAME}.tar.gz"
+fi
 
-readonly package_name="cmake-${APP_VERSION}-linux-${arch}"
 echo
-echo "Extract ${package_name}"
-tar -xvf ${package_name}.tar.gz
+echo "Extract ${PACKAGE_NAME}"
+tar -xvf ${PACKAGE_NAME}.tar.gz
 
 echo
 echo "Add binary"
-cp ${package_name}/bin/cmake "${APPDIR}/usr/bin/"
+cp ${PACKAGE_NAME}/bin/cmake "${APPDIR}/usr/bin/"
 
 echo
 echo "Add modules"
 readonly short_version=$(echo "$APP_VERSION" | cut -d '.' -f1,2)
-cp -r ${package_name}/share/cmake-${short_version} "$APPDIR/usr/share"
+cp -r ${PACKAGE_NAME}/share/cmake-${short_version} "$APPDIR/usr/share"
 
 echo
 echo "Add AppRun"
 cat > "${APPDIR}/AppRun" <<EOF
 #!/bin/bash
-HERE=\$(dirname "\$(readlink -f "\$0")")
-export PATH="\$HERE/usr/bin:$PATH"
-export CMAKE_ROOT="\$HERE/usr/share/cmake-${short_version}"
-exec "\$HERE/usr/bin/${APP}" "\$@"
+export __HERE=\$(dirname "\$(readlink -f "\$0")")
+#export PATH="\$__HERE/usr/bin:$PATH"
+#export CMAKE_ROOT="\$__HERE/usr/share/cmake-${short_version}"
+exec "\$__HERE/usr/bin/${APP}" "\$@"
 EOF
 chmod +x "${APPDIR}/AppRun"
 
@@ -77,8 +79,8 @@ echo "Build"
 echo
 echo "Cleanup"
 rm -rf ${APPDIR}
-rm -rf ${package_name}.tar.gz
-rm -rf ${package_name}
+rm -rf ${PACKAGE_NAME}.tar.gz
+rm -rf ${PACKAGE_NAME}
 
 echo
 echo "Move ${APP} to ../builds"
