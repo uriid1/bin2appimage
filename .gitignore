@@ -1,3 +1,4 @@
+build/*
 linuxdeploy
 *.AppDir/
 *.AppImage

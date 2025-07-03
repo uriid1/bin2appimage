@@ -1,0 +1,12 @@
+#!/bin/env bash
+
+# https://github.com/linuxdeploy/linuxdeploy/issues/272
+export NO_STRIP=true
+
+# Конфиг
+APP=sqlite3
+BINARY_PATH="$(which $APP)"
+APPDIR=./Sqlite3.AppDir
+ICON_SOURCE=icon.png
+ICON_NAME=$APP
+CATEGORIES="Development"
