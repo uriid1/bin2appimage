@@ -1,0 +1,12 @@
+#!/bin/env bash
+
+# https://github.com/linuxdeploy/linuxdeploy/issues/272
+export NO_STRIP=true
+
+# Конфиг
+APP=jq
+BINARY_PATH="$(which $APP)"
+APPDIR=./Jq.AppDir
+ICON_SOURCE=icon.png
+ICON_NAME=$APP
+CATEGORIES="Development"
