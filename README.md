@@ -25,3 +25,7 @@ bash deps.sh
 1. Перейти в `apps/node`
 2. Выполнить `bash ../../scripts/build`
 3. В случае успеха `AppImage` с имемем `node` будет в директории `bin2appimage/builds`.
+
+## Песочница
+Для обеспечения изоляции можно использовать 
+[firejail](https://wiki.archlinux.org/title/Firejail_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9))
