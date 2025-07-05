@@ -4,9 +4,9 @@
 export NO_STRIP=true
 
 # Конфиг
-APP=tarantool
-BINARY_PATH="$(which $APP)"
-APPDIR=./Tarantool.AppDir
-ICON_SOURCE=icon.png
-ICON_NAME=$APP
-CATEGORIES="Development"
+readonly APP=tarantool
+readonly BINARY_PATH="$(which $APP)"
+readonly APPDIR=./${APP}.AppDir
+readonly ICON_SOURCE=icon.png
+readonly ICON_NAME=$APP
+readonly CATEGORIES="Development;Database"

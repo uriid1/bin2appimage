@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+readonly c_def='\033[0m'
+readonly c_bold='\033[1m'
+readonly c_underline='\033[4m'
+
+readonly c_black='\033[30m'
+readonly c_red='\033[31m'
+readonly c_green='\033[32m'
+readonly c_yellow='\033[33m'
+readonly c_blue='\033[34m'
+readonly c_magenta='\033[35m'
+readonly c_cyan='\033[36m'
+readonly c_white='\033[37m'
+
+readonly bg_red='\033[41m'
+readonly bg_green='\033[42m'
+readonly bg_yellow='\033[43m'
+readonly bg_blue='\033[44m'
+readonly bg_magenta='\033[45m'
+readonly bg_cyan='\033[46m'
+readonly bg_white='\033[47m'

@@ -3,24 +3,52 @@
 set -euo pipefail
 
 source "./conf"
+source "$(dirname "$0")/lib/_customize"
 
-echo "Check deps"
-command -v magick >/dev/null || { echo "ImageMagick (convert) not found"; exit 1; }
-command -v ../.././linuxdeploy >/dev/null || { echo "linuxdeploy not found"; exit 1; }
+print_info() {
+  echo -e "${c_yellow}${1}${c_def}"
+}
+print_success() {
+  echo -e "${c_green}${1}${c_def}"
+}
+print_error() {
+  echo -e "${c_red}${1}${c_def}"
+}
+
+print_info "Check deps"
+command -v magick >/dev/null && {
+  print_success "[✓] ImageMagick: found"
+} || {
+  print_error "[-] ImageMagick (convert) not found"
+  exit 1
+}
+
+command -v ../.././linuxdeploy >/dev/null && {
+  print_success "[✓] linuxdeploy: found"
+} || {
+  print_error "linuxdeploy not found"
+  exit 1
+}
 
 echo
-echo "Make dirs: ${APPDIR}"
-rm -rf "${APPDIR}"
-mkdir -p "${APPDIR}/usr/bin"
-mkdir -p "${APPDIR}/usr/share/applications"
-mkdir -p "${APPDIR}/usr/share/icons/hicolor"
+print_info "Make dirs"
+rm -rf "${APPDIR}" &&
+  print_success "[✓] Remove ${APPDIR}"
+
+mkdir -p "${APPDIR}/usr/bin" &&
+  print_success "[✓] Make dir: ${APPDIR}/usr/bin"
+
+mkdir -p "${APPDIR}/usr/share/applications" &&
+  print_success "[✓] Make dir: ${APPDIR}/usr/share/applications"
+
+mkdir -p "${APPDIR}/usr/share/icons/hicolor" &&
+  print_success "[✓] Make dir: ${APPDIR}/usr/share/icons/hicolor"
 
 echo
-echo "Add binary: ${BINARY_PATH}"
+print_info "Add binary"
 cp ${BINARY_PATH} "${APPDIR}/usr/bin/"
 
-echo
-echo "Add AppRun"
+print_info "Add AppRun"
 cat > "${APPDIR}/AppRun" <<EOF
 #!/bin/bash
 HERE=\$(dirname "\$(readlink -f "\$0")")
@@ -28,8 +56,7 @@ exec "\$HERE/usr/bin/${APP}" "\$@"
 EOF
 chmod +x "${APPDIR}/AppRun"
 
-echo
-echo "Add .desktop"
+print_info "Add .desktop"
 cat > "${APPDIR}/usr/share/applications/${APP}.desktop" <<EOF
 [Desktop Entry]
 Type=Application
@@ -41,14 +68,17 @@ Categories=${CATEGORIES};
 EOF
 
 echo
-echo "Add icons"
+print_info "Add icons"
 for size in 16 32 64 128 256; do
-  mkdir -p "${APPDIR}/usr/share/icons/hicolor/${size}x${size}/apps"
-  magick "${ICON_SOURCE}" -resize ${size}x${size} "$APPDIR/usr/share/icons/hicolor/${size}x${size}/apps/${ICON_NAME}.png"
+  path="${APPDIR}/usr/share/icons/hicolor/${size}x${size}/apps"
+  icon="${ICON_NAME}.png"
+  mkdir -p "${path}"
+  magick "${ICON_SOURCE}" -resize ${size}x${size} "${path}/${icon}" &&
+    print_success "[✓] Icon convert: ${path}/${icon}"
 done
 
 echo
-echo "Build"
+print_info "Build"
 ../.././linuxdeploy \
   --appdir "${APPDIR}" \
   --executable="${APPDIR}/usr/bin/${APP}" \
@@ -57,6 +87,6 @@ echo "Build"
   --output appimage
 
 echo
-echo "Move ${APP} to ../builds"
+print_info "Move ${APP} to ../builds"
 mkdir -p ../../builds/
 mv "${APP}"*.AppImage ../../builds/${APP}

@@ -4,9 +4,9 @@
 export NO_STRIP=true
 
 # Конфиг
-APP=curl
-BINARY_PATH="$(which $APP)"
-APPDIR=./Curl.AppDir
-ICON_SOURCE=icon.png
-ICON_NAME=$APP
-CATEGORIES="Development"
+readonly APP=curl
+readonly BINARY_PATH="$(which $APP)"
+readonly APPDIR=./${APP}.AppDir
+readonly ICON_SOURCE=icon.png
+readonly ICON_NAME=$APP
+readonly CATEGORIES="Network;FileTransfer"

@@ -4,9 +4,9 @@
 export NO_STRIP=true
 
 # Конфиг
-APP=git
-BINARY_PATH="$(which $APP)"
-APPDIR=./Git.AppDir
-ICON_SOURCE=icon.png
-ICON_NAME=$APP
-CATEGORIES="Development"
+readonly APP=git
+readonly BINARY_PATH="$(which $APP)"
+readonly APPDIR=./${APP}.AppDir
+readonly ICON_SOURCE=icon.png
+readonly ICON_NAME=$APP
+readonly CATEGORIES="Development;RevisionControl"

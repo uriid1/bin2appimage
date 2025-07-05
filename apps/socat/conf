@@ -4,9 +4,9 @@
 export NO_STRIP=true
 
 # Конфиг
-APP=socat
-BINARY_PATH="$(which $APP)"
-APPDIR=./Socat.AppDir
-ICON_SOURCE=icon.png
-ICON_NAME=$APP
-CATEGORIES="Development"
+readonly APP=socat
+readonly BINARY_PATH="$(which $APP)"
+readonly APPDIR=./${APP}.AppDir
+readonly ICON_SOURCE=icon.png
+readonly ICON_NAME=$APP
+readonly CATEGORIES="Network;RemoteAccess"
